@@ -25,4 +25,4 @@ A Python-based Finance Chatbot using keyword-based NLP.
 ## Project
 Yenepoya Institute of Arts, Science, Commerce and Management
 IBM Innovation Centre for Education — Project 2026
-Student: Fathima Rahda V | Guide: Mr. Praveen
+Student: Fathima Rahda V | Guide: Mr. Manjula
