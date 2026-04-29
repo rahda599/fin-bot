@@ -1,1 +1,1226 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinBot - Smart Finance Assistant</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ====================================================
+   GLOBAL RESET & VARIABLES
+   ==================================================== */
+:root {
+  --bg: #06080f;
+  --surface: #0d1117;
+  --surface2: #161b27;
+  --surface3: #1c2338;
+  --border: rgba(255,255,255,0.07);
+  --accent: #00d4aa;
+  --accent2: #4f8aff;
+  --accent3: #ffd166;
+  --text: #e8eaf0;
+  --muted: #6b7280;
+  --bot-bg: #0f1520;
+  --user-bg: #0a2218;
+  --shadow: 0 25px 60px rgba(0,0,0,0.6);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* ====================================================
+   GRID BACKGROUND
+   ==================================================== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,212,170,0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,212,170,0.025) 1px, transparent 1px);
+  background-size: 44px 44px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ====================================================
+   NAVBAR
+   ==================================================== */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 6%;
+  height: 64px;
+  background: rgba(6,8,15,0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'DM Serif Display', serif;
+  font-size: 20px;
+  letter-spacing: -0.3px;
+}
+.nav-logo-icon {
+  width: 32px; height: 32px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+}
+.nav-logo span { color: var(--accent); }
+.nav-links {
+  display: flex;
+  gap: 32px;
+  margin-left: auto;
+  list-style: none;
+}
+.nav-links a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-links a:hover { color: var(--text); }
+.nav-cta {
+  margin-left: 32px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff !important;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  transition: filter 0.2s !important;
+}
+.nav-cta:hover { filter: brightness(1.1); color: #fff !important; }
+
+/* ====================================================
+   HERO SECTION
+   ==================================================== */
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 100px 20px 60px;
+  overflow: hidden;
+  z-index: 1;
+}
+.hero-glow {
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(0,212,170,0.12) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(0,212,170,0.08);
+  border: 1px solid rgba(0,212,170,0.25);
+  border-radius: 50px;
+  padding: 6px 16px;
+  font-size: 12px;
+  color: var(--accent);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin-bottom: 28px;
+}
+.badge-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: blink 2s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(38px, 6vw, 72px);
+  line-height: 1.1;
+  letter-spacing: -2px;
+  margin-bottom: 22px;
+}
+.hero h1 .grad {
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(15px, 2vw, 18px);
+  color: var(--muted);
+  max-width: 540px;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  color: #fff;
+  border: none;
+  padding: 13px 28px;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0,212,170,0.3); }
+.btn-secondary {
+  background: var(--surface2);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 13px 28px;
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-secondary:hover { border-color: rgba(255,255,255,0.2); background: var(--surface3); }
+
+/* Hero Stats */
+.hero-stats {
+  display: flex;
+  gap: 40px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+.stat-item { text-align: center; }
+.stat-val {
+  font-family: 'DM Serif Display', serif;
+  font-size: 28px;
+  color: var(--accent);
+  letter-spacing: -1px;
+}
+.stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+/* ====================================================
+   FEATURES SECTION
+   ==================================================== */
+.section {
+  padding: 90px 6%;
+  position: relative;
+  z-index: 1;
+}
+.section-label {
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 700;
+  margin-bottom: 14px;
+}
+.section-title {
+  text-align: center;
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(26px, 4vw, 42px);
+  letter-spacing: -1px;
+  margin-bottom: 12px;
+}
+.section-sub {
+  text-align: center;
+  color: var(--muted);
+  font-size: 15px;
+  max-width: 480px;
+  margin: 0 auto 56px;
+  line-height: 1.7;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.feature-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+.feature-card:hover { border-color: rgba(0,212,170,0.2); transform: translateY(-4px); }
+.feature-card:hover::before { opacity: 1; }
+.feat-icon {
+  font-size: 28px;
+  margin-bottom: 14px;
+  display: block;
+}
+.feat-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+}
+.feat-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+/* ====================================================
+   TOPICS SECTION
+   ==================================================== */
+.topics-section { background: var(--surface); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+.topics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.topic-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.topic-card:hover {
+  border-color: rgba(0,212,170,0.3);
+  background: rgba(0,212,170,0.04);
+  transform: translateY(-2px);
+}
+.topic-icon { font-size: 22px; }
+.topic-info {}
+.topic-name { font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+.topic-hint { font-size: 12px; color: var(--muted); }
+
+/* ====================================================
+   HOW IT WORKS
+   ==================================================== */
+.steps-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0;
+  max-width: 900px;
+  margin: 0 auto;
+  position: relative;
+}
+.steps-row::before {
+  content: '';
+  position: absolute;
+  top: 28px; left: 15%; right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity: 0.3;
+}
+.step {
+  text-align: center;
+  padding: 0 24px;
+}
+.step-num {
+  width: 56px; height: 56px;
+  background: linear-gradient(135deg, rgba(0,212,170,0.15), rgba(79,138,255,0.15));
+  border: 1px solid rgba(0,212,170,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--accent);
+  margin: 0 auto 18px;
+}
+.step-title { font-size: 15px; font-weight: 600; margin-bottom: 8px; }
+.step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ====================================================
+   FOOTER
+   ==================================================== */
+footer {
+  padding: 40px 6%;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  position: relative;
+  z-index: 1;
+}
+.footer-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  display: flex; align-items: center; gap: 8px;
+}
+.footer-logo span { color: var(--accent); }
+.footer-copy { font-size: 12px; color: var(--muted); }
+.footer-tech {
+  font-size: 11px;
+  color: var(--muted);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ====================================================
+   FLOATING CHAT BUTTON
+   ==================================================== */
+#chat-fab {
+  position: fixed;
+  bottom: 28px; right: 28px;
+  width: 60px; height: 60px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  z-index: 999;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 8px 28px rgba(0,212,170,0.4);
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  overflow: hidden;
+}
+#chat-fab:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 36px rgba(0,212,170,0.55);
+}
+#chat-fab .fab-icon-open,
+#chat-fab .fab-icon-close {
+  position: absolute;
+  font-size: 26px;
+  transition: all 0.3s ease;
+}
+#chat-fab .fab-icon-close {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.5);
+  font-size: 22px;
+}
+#chat-fab.open .fab-icon-open {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.5);
+}
+#chat-fab.open .fab-icon-close {
+  opacity: 1;
+  transform: rotate(0deg) scale(1);
+}
+
+/* Notification badge */
+.fab-badge {
+  position: absolute;
+  top: 2px; right: 2px;
+  width: 16px; height: 16px;
+  background: #ff4757;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  color: #fff;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid var(--bg);
+  animation: badgePop 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes badgePop { from{transform:scale(0);} to{transform:scale(1);} }
+.fab-badge.hidden { display: none; }
+
+/* Pulse ring */
+#chat-fab::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(0,212,170,0.4);
+  animation: fabPulse 2.5s ease infinite;
+}
+@keyframes fabPulse {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ====================================================
+   CHAT WIDGET PANEL
+   ==================================================== */
+#chat-widget {
+  position: fixed;
+  bottom: 102px; right: 28px;
+  width: 380px;
+  height: 560px;
+  background: var(--surface);
+  border: 1px solid rgba(0,212,170,0.2);
+  border-radius: 20px;
+  z-index: 998;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 0 1px rgba(0,212,170,0.08);
+  overflow: hidden;
+
+  /* Hidden state */
+  opacity: 0;
+  transform: translateY(20px) scale(0.95);
+  pointer-events: none;
+  transform-origin: bottom right;
+  transition: all 0.35s cubic-bezier(0.34,1.2,0.64,1);
+}
+#chat-widget.open {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: all;
+}
+
+/* Widget Header */
+.widget-header {
+  padding: 16px 18px;
+  background: linear-gradient(135deg, rgba(0,212,170,0.1), rgba(79,138,255,0.08));
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.widget-avatar {
+  width: 38px; height: 38px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+.widget-info {}
+.widget-name {
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+.widget-status {
+  font-size: 11px;
+  color: var(--accent);
+  display: flex; align-items: center; gap: 5px;
+  margin-top: 2px;
+}
+.w-dot {
+  width: 6px; height: 6px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: blink 2s infinite;
+}
+.widget-close {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 18px;
+  padding: 4px;
+  border-radius: 6px;
+  transition: all 0.15s;
+  display: flex;
+}
+.widget-close:hover { background: var(--surface2); color: var(--text); }
+
+/* Widget Messages */
+#widget-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  scroll-behavior: smooth;
+}
+#widget-messages::-webkit-scrollbar { width: 3px; }
+#widget-messages::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+
+/* Message rows */
+.w-row { display: flex; gap: 8px; animation: wSlide 0.22s ease; }
+@keyframes wSlide { from{opacity:0;transform:translateY(6px);} to{opacity:1;transform:translateY(0);} }
+.w-row.user { flex-direction: row-reverse; }
+.w-av {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.w-av.bot { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+.w-av.user { background: var(--surface3); }
+.w-wrap { max-width: 80%; display: flex; flex-direction: column; gap: 3px; }
+.w-row.user .w-wrap { align-items: flex-end; }
+.w-bub {
+  padding: 9px 13px;
+  border-radius: 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  border: 1px solid transparent;
+}
+.w-bub.bot {
+  background: var(--bot-bg);
+  border-color: var(--border);
+  border-top-left-radius: 3px;
+}
+.w-bub.user {
+  background: var(--user-bg);
+  border-color: rgba(0,212,170,0.15);
+  border-top-right-radius: 3px;
+  color: #c8f5ec;
+}
+.w-bub strong { color: var(--accent3); }
+.w-bub code { font-family: 'JetBrains Mono',monospace; font-size: 11px; background: rgba(255,255,255,0.06); padding: 1px 5px; border-radius: 3px; }
+.w-time { font-size: 10px; color: var(--muted); padding: 0 3px; font-family: 'JetBrains Mono',monospace; }
+.w-fu {
+  font-size: 11px;
+  color: var(--accent);
+  padding: 3px 8px;
+  background: rgba(0,212,170,0.06);
+  border-radius: 5px;
+  border-left: 2px solid var(--accent);
+  cursor: pointer;
+  margin-top: 2px;
+}
+.w-fu:hover { background: rgba(0,212,170,0.12); }
+
+/* Table in widget */
+.w-bub table { border-collapse: collapse; width: 100%; margin-top: 6px; font-size: 11.5px; }
+.w-bub th { background: rgba(0,212,170,0.1); color: var(--accent); padding: 4px 8px; text-align: left; font-weight: 500; }
+.w-bub td { padding: 4px 8px; border-bottom: 1px solid var(--border); color: #c0c8d8; }
+.w-bub tr:last-child td { border-bottom: none; }
+
+/* Typing */
+.w-typing { display: flex; gap: 8px; align-items: center; }
+.w-typing-bub { background: var(--bot-bg); border: 1px solid var(--border); border-radius: 14px; border-top-left-radius: 3px; padding: 9px 13px; display: flex; gap: 4px; align-items: center; }
+.w-dot-t { width: 5px; height: 5px; background: var(--muted); border-radius: 50%; animation: wTyping 1.2s infinite; }
+.w-dot-t:nth-child(2) { animation-delay: 0.2s; }
+.w-dot-t:nth-child(3) { animation-delay: 0.4s; }
+@keyframes wTyping { 0%,60%,100%{transform:translateY(0);opacity:0.4;} 30%{transform:translateY(-4px);opacity:1;} }
+
+/* Quick topic chips in widget */
+.w-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 14px 10px; flex-shrink: 0; }
+.w-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 4px 11px;
+  font-size: 11.5px;
+  cursor: pointer;
+  color: var(--text);
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.w-chip:hover { border-color: var(--accent); color: var(--accent); background: rgba(0,212,170,0.05); }
+
+/* Widget Input */
+.widget-input {
+  padding: 10px 12px 12px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.w-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+  transition: border-color 0.2s;
+}
+.w-input-row:focus-within { border-color: rgba(0,212,170,0.4); }
+#w-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  resize: none;
+  max-height: 80px;
+  line-height: 1.5;
+}
+#w-input::placeholder { color: var(--muted); }
+#w-send {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+#w-send:hover { transform: scale(1.07); }
+#w-send svg { width: 13px; height: 13px; fill: white; }
+
+/* ====================================================
+   RESPONSIVE
+   ==================================================== */
+@media (max-width: 480px) {
+  #chat-widget { width: calc(100vw - 20px); right: 10px; bottom: 90px; height: 70vh; }
+  #chat-fab { bottom: 18px; right: 18px; }
+  .nav-links { display: none; }
+  .hero h1 { font-size: 32px; }
+  footer { flex-direction: column; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<!-- ====================================================
+     NAVBAR
+     ==================================================== -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-icon">&#x1F4B9;</div>
+    Fin<span>Bot</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#topics">Topics</a></li>
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#" class="nav-cta" onclick="openChat()">Try FinBot</a></li>
+  </ul>
+</nav>
+
+<!-- ====================================================
+     HERO
+     ==================================================== -->
+<section class="hero" id="home">
+  <div class="hero-glow"></div>
+  <div>
+    <div class="hero-badge"><div class="badge-dot"></div> NLP-Powered Finance AI</div>
+    <h1>Your Smart <span class="grad">Finance</span><br>Assistant</h1>
+    <p class="hero-sub">Ask anything about stocks, investments, loans, taxes, budgeting and insurance in plain English. Instant answers, no jargon.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openChat()">&#x1F4AC; Chat with FinBot</button>
+      <button class="btn-secondary" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Learn More</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item"><div class="stat-val">10+</div><div class="stat-label">Finance Topics</div></div>
+      <div class="stat-item"><div class="stat-val">50+</div><div class="stat-label">Query Patterns</div></div>
+      <div class="stat-item"><div class="stat-val">100%</div><div class="stat-label">Free to Use</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================
+     FEATURES
+     ==================================================== -->
+<section class="section" id="features">
+  <div class="section-label">Why FinBot</div>
+  <h2 class="section-title">Built for Smart Finance Decisions</h2>
+  <p class="section-sub">Powered by Python keyword-based NLP with weighted scoring to understand your questions naturally.</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feat-icon">&#x1F4CA;</span>
+      <div class="feat-title">Real Finance Data</div>
+      <div class="feat-desc">India-specific data including NSE/BSE, tax slabs, 80C deductions, EMI formulas and current interest rates.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feat-icon">&#x1F9E0;</span>
+      <div class="feat-title">Keyword NLP Engine</div>
+      <div class="feat-desc">Multi-word phrase matching with weighted scoring. The more finance terms you use, the smarter and more accurate the response.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feat-icon">&#x26A1;</span>
+      <div class="feat-title">Instant Responses</div>
+      <div class="feat-desc">No API calls, no waiting. The Python engine processes your query locally and returns answers in milliseconds.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feat-icon">&#x1F4CB;</span>
+      <div class="feat-title">Structured Answers</div>
+      <div class="feat-desc">Responses include tables, formulas, checklists and follow-up suggestions to help you understand topics deeply.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feat-icon">&#x1F510;</span>
+      <div class="feat-title">Privacy First</div>
+      <div class="feat-desc">Everything runs locally. No data sent to any server. Your financial queries remain completely private.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feat-icon">&#x1F4F1;</span>
+      <div class="feat-title">Mobile Friendly</div>
+      <div class="feat-desc">Fully responsive chat widget works perfectly on phones, tablets and desktops. Finance help wherever you are.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================
+     TOPICS
+     ==================================================== -->
+<section class="section topics-section" id="topics">
+  <div class="section-label">Coverage</div>
+  <h2 class="section-title">10 Finance Topics Covered</h2>
+  <p class="section-sub">Click any topic to instantly ask FinBot about it.</p>
+  <div class="topics-grid">
+    <div class="topic-card" onclick="openAndAsk('explain stocks equity nifty sensex')">
+      <span class="topic-icon">&#x1F4C8;</span>
+      <div class="topic-info"><div class="topic-name">Stocks & Equity</div><div class="topic-hint">NSE, BSE, Nifty, P/E ratio</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('how to budget monthly 50 30 20 rule')">
+      <span class="topic-icon">&#x1F4B0;</span>
+      <div class="topic-info"><div class="topic-name">Budgeting</div><div class="topic-hint">50/30/20, expense tracking</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('how do loans and EMI work')">
+      <span class="topic-icon">&#x1F3E6;</span>
+      <div class="topic-info"><div class="topic-name">Loans &amp; EMI</div><div class="topic-hint">Home, car, personal loans</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('best investment options SIP mutual funds')">
+      <span class="topic-icon">&#x1F4E6;</span>
+      <div class="topic-info"><div class="topic-name">Investments</div><div class="topic-hint">SIP, mutual funds, FD, PPF</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('how to save income tax 80c deductions')">
+      <span class="topic-icon">&#x1F9FE;</span>
+      <div class="topic-info"><div class="topic-name">Income Tax</div><div class="topic-hint">80C, ITR, old vs new regime</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('explain term insurance health insurance')">
+      <span class="topic-icon">&#x1F6E1;</span>
+      <div class="topic-info"><div class="topic-name">Insurance</div><div class="topic-hint">Term, health, ULIP</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('what is cryptocurrency bitcoin blockchain')">
+      <span class="topic-icon">&#x1F517;</span>
+      <div class="topic-info"><div class="topic-name">Cryptocurrency</div><div class="topic-hint">Bitcoin, Ethereum, DeFi</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('savings emergency fund tips')">
+      <span class="topic-icon">&#x1F4BE;</span>
+      <div class="topic-info"><div class="topic-name">Savings</div><div class="topic-hint">Emergency fund, RD, liquid</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('what is inflation and how to beat it')">
+      <span class="topic-icon">&#x1F4C9;</span>
+      <div class="topic-info"><div class="topic-name">Inflation</div><div class="topic-hint">CPI, real returns, RBI</div></div>
+    </div>
+    <div class="topic-card" onclick="openAndAsk('explain compound interest rule of 72')">
+      <span class="topic-icon">&#x1F501;</span>
+      <div class="topic-info"><div class="topic-name">Compounding</div><div class="topic-hint">Rule of 72, CAGR</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================
+     HOW IT WORKS
+     ==================================================== -->
+<section class="section" id="how">
+  <div class="section-label">Process</div>
+  <h2 class="section-title">How FinBot Works</h2>
+  <p class="section-sub">Simple Python NLP pipeline processes your queries in real time.</p>
+  <div class="steps-row">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">You Type a Query</div>
+      <div class="step-desc">Type any finance question in plain English. No special commands or syntax needed.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">Tokenization</div>
+      <div class="step-desc">Python cleans and tokenizes your input, stripping punctuation and normalizing text.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">Keyword Scoring</div>
+      <div class="step-desc">Each finance category is scored based on weighted keyword matches. Best score wins.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">04</div>
+      <div class="step-title">Response Returned</div>
+      <div class="step-desc">The matched category returns a structured, India-specific finance answer instantly.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================================================
+     FOOTER
+     ==================================================== -->
+<footer>
+  <div class="footer-logo">
+    <div class="nav-logo-icon" style="width:26px;height:26px;font-size:13px">&#x1F4B9;</div>
+    Fin<span>Bot</span>
+  </div>
+  <div class="footer-copy">Built with Python + Flask &mdash; Finance Chatbot Project</div>
+  <div class="footer-tech">Python / String Matching / Flask</div>
+</footer>
+
+<!-- ====================================================
+     FLOATING CHAT BUTTON
+     ==================================================== -->
+<button id="chat-fab" onclick="toggleChat()" title="Chat with FinBot">
+  <span class="fab-icon-open">&#x1F4AC;</span>
+  <span class="fab-icon-close">&#x2715;</span>
+  <div class="fab-badge" id="fab-badge">1</div>
+</button>
+
+<!-- ====================================================
+     CHAT WIDGET
+     ==================================================== -->
+<div id="chat-widget">
+
+  <!-- Header -->
+  <div class="widget-header">
+    <div class="widget-avatar">&#x1F916;</div>
+    <div class="widget-info">
+      <div class="widget-name">FinBot Assistant</div>
+      <div class="widget-status"><div class="w-dot"></div> Online &mdash; Finance NLP Engine</div>
+    </div>
+    <button class="widget-close" onclick="toggleChat()" title="Close">&#x2715;</button>
+  </div>
+
+  <!-- Messages -->
+  <div id="widget-messages"></div>
+
+  <!-- Quick chips -->
+  <div class="w-chips" id="w-chips">
+    <button class="w-chip" onclick="wSendQuick('what is SIP')">SIP?</button>
+    <button class="w-chip" onclick="wSendQuick('how to save income tax')">Save Tax</button>
+    <button class="w-chip" onclick="wSendQuick('explain budgeting rule')">Budgeting</button>
+    <button class="w-chip" onclick="wSendQuick('compound interest rule 72')">Compounding</button>
+    <button class="w-chip" onclick="wSendQuick('help')">All Topics</button>
+  </div>
+
+  <!-- Input -->
+  <div class="widget-input">
+    <div class="w-input-row">
+      <textarea id="w-input" placeholder="Ask a finance question..." rows="1"></textarea>
+      <button id="w-send" onclick="wSendMessage()">
+        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+</div>
+
+<!-- ====================================================
+     JAVASCRIPT — NLP ENGINE + CHAT LOGIC
+     ==================================================== -->
+<script>
+"use strict";
+
+/* ── Knowledge Base ─────────────────────────────────────────── */
+var KB = {
+  stock: {
+    kw: ["stock","stocks","share","shares","equity","nse","bse","sensex","nifty","market","ipo","demat"],
+    r: [
+      "**Stock Market Overview**: Stocks = ownership in a company. Key Indian indices: **NSE Nifty 50** and **BSE Sensex**. You need a Demat + Trading account (Zerodha, Upstox, Groww).\n\nStocks are volatile short-term but historically give **12-15% CAGR** long-term. Start with index funds if you're new.",
+      "**Stocks 101**: A share = 1 unit of ownership. Prices change based on earnings, market sentiment, and economy.\n\n**Key Metrics**:\n- **P/E Ratio** = Price / EPS (lower may = undervalued)\n- **Market Cap** = Price x Total Shares\n- **Dividend** = Company sharing profits with shareholders"
+    ],
+    fu: ["Want to know about IPO investing?","Should I explain how to read a balance sheet?"]
+  },
+  budget: {
+    kw: ["budget","budgeting","expense","expenses","spending","monthly","plan","50/30/20","allocation","50 30 20","track"],
+    r: [
+      "**The 50/30/20 Budget Rule**:\n- **50%** Needs: rent, food, transport, EMIs\n- **30%** Wants: dining, shopping, entertainment\n- **20%** Savings and investments\n\nFor Rs. 50,000 salary: Rs. 25,000 needs | Rs. 15,000 wants | Rs. 10,000 savings.",
+      "**Zero-Based Budgeting**: Assign every rupee a job. Income - All Expenses = 0.\n\nSteps:\n1. List all income\n2. List every expense\n3. Set limits per category\n4. Track daily with apps like **Walnut** or **Money Manager**\n5. Review every month and adjust"
+    ],
+    fu: ["Want a sample budget for Rs. 40,000 salary?","Should I explain zero-based budgeting?"]
+  },
+  loan: {
+    kw: ["loan","loans","emi","borrow","borrowing","interest","debt","credit","home loan","personal loan","car loan","mortgage"],
+    r: [
+      "**EMI Formula**: A = [P x R x (1+R)^N] / [(1+R)^N - 1]\nP = Principal, R = Monthly Rate, N = Months\n\n**Example**: Rs. 10L loan at 9% for 20 years = Rs. 8,997/month EMI.\n\nLonger tenure = lower EMI but more total interest paid overall.",
+      "**Loan Rates Comparison (2024)**:\n| Type | Rate | Tenure |\n|------|------|--------|\n| Home Loan | 8-9% | 20-30 yr |\n| Car Loan | 8-12% | 5-7 yr |\n| Personal Loan | 10-18% | 1-5 yr |\n| Education Loan | 9-11% | 5-15 yr |\n\nAlways compare total cost (APR), not just the interest rate headline."
+    ],
+    fu: ["Should I compare fixed vs floating interest rates?","Want tips to reduce EMI burden?"]
+  },
+  investment: {
+    kw: ["invest","investment","investments","mutual fund","sip","fd","fixed deposit","ppf","gold","portfolio","returns","roi","elss","nps","mf"],
+    r: [
+      "**Investment Options - Returns vs Risk**:\n| Option | Return | Risk |\n|--------|--------|------|\n| FD | 6-7% | Very Low |\n| PPF | 7.1% | None |\n| Debt MF | 7-8% | Low |\n| Balanced MF | 9-12% | Medium |\n| Equity MF | 12-15% | High |\n\nDiversify across asset classes for best results!",
+      "**SIP (Systematic Investment Plan)**:\nInvest a fixed amount monthly in mutual funds.\n\nBenefits:\n- Rupee Cost Averaging: buy more units when prices drop\n- Power of Compounding: returns grow exponentially\n- Discipline: automatic investing habit\n\nRs. 1,000/month at 12% for 20 years = **Rs. 9.9 Lakhs!**"
+    ],
+    fu: ["Want to understand lump sum vs SIP?","Should I explain large-cap vs mid-cap funds?"]
+  },
+  tax: {
+    kw: ["tax","taxes","income tax","gst","tds","itr","return","deduction","80c","section","tax saving","slab","hra","nps"],
+    r: [
+      "**Income Tax Slabs FY 2024-25 (New Regime)**:\n| Income | Rate |\n|--------|------|\n| Up to Rs. 3L | Nil |\n| Rs. 3L - 7L | 5% |\n| Rs. 7L - 10L | 10% |\n| Rs. 10L - 12L | 15% |\n| Rs. 12L - 15L | 20% |\n| Above Rs. 15L | 30% |\n\nNew regime: lower rates but no deductions.",
+      "**Tax Saving - Old Regime**:\n- **80C** (Rs. 1.5L): ELSS, PPF, LIC, EPF\n- **80D** (Rs. 25,000): Health insurance premium\n- **NPS** (Rs. 50,000 extra): Section 80CCD\n- **HRA**: If paying rent, get deduction\n- **Home Loan Interest**: Up to Rs. 2L under Sec 24\n\nFile ITR by July 31 to avoid penalties!"
+    ],
+    fu: ["Want to compare Old vs New tax regime?","How to maximize 80C?"]
+  },
+  insurance: {
+    kw: ["insurance","insure","policy","premium","term","life insurance","health insurance","cover","claim","ulip","lic"],
+    r: [
+      "**Insurance Types**:\n- **Term Insurance**: Pure life cover. Rs. 1Cr for ~Rs. 8,000/yr at age 25. Best value for life protection.\n- **Health Insurance**: Rs. 5-10L minimum cover. Cashless hospitals, critical illness cover.\n- **ULIP**: Insurance + Investment hybrid - usually NOT recommended due to high fees.\n\nBuy term + mutual funds separately. Always better value than ULIP.",
+      "**Health Insurance Checklist**:\n- Minimum Rs. 5L sum insured (Rs. 10L preferred)\n- Cashless hospital network near you\n- Low or no co-pay clause\n- Restoration benefit included\n- Pre-existing disease waiting period under 2 years\n- No room rent limit\n\nBuy young - premiums nearly double every 5 years with age!"
+    ],
+    fu: ["Want to know the best health insurance plans?","Should I explain claim settlement ratio?"]
+  },
+  cryptocurrency: {
+    kw: ["crypto","cryptocurrency","bitcoin","ethereum","blockchain","defi","nft","web3","btc","eth","altcoin","coin"],
+    r: [
+      "**Cryptocurrency Basics**:\n- **Bitcoin (BTC)**: Digital gold, store of value, limited to 21M coins ever\n- **Ethereum (ETH)**: Smart contract platform, powers DeFi and NFTs\n- **Blockchain**: Decentralized, immutable, transparent ledger\n\nIndia taxes crypto at **30% flat** plus 1% TDS. Extremely volatile - only invest what you can afford to lose.",
+      "**Crypto Safety Rules**:\n1. Use only reputable exchanges: CoinDCX, WazirX, Binance\n2. Enable 2FA on all accounts always\n3. Never ever share your private keys\n4. Use hardware wallet for large holdings\n5. Beware of pump and dump scams\n6. Diversify - do not go all-in on one coin\n\nCrypto = high risk, high potential reward. Not for beginners!"
+    ],
+    fu: ["Want to understand DeFi vs CeFi?","Should I explain how blockchain works?"]
+  },
+  savings: {
+    kw: ["save","savings","emergency fund","liquid","bank","account","recurring deposit","rd","liquid fund","famine fund"],
+    r: [
+      "**Emergency Fund First**: Build 3-6 months of expenses in liquid assets BEFORE investing.\n\nBest places to keep it:\n- High-yield savings account (5-6%)\n- Liquid mutual funds (7%+, redemption in 1 day)\n- Short-term FD (6-7%)\n\nNever keep emergency fund in stocks - markets may be down exactly when you need money!",
+      "**Savings Options Compared**:\n| Option | Rate | Liquidity |\n|--------|------|-----------|\n| Regular SA | 3-4% | Instant |\n| High-yield SA | 5-7% | Instant |\n| Liquid Fund | 7-7.5% | 1 day |\n| RD 6 months | 6.5% | Moderate |\n| FD 1 year | 7-7.5% | Low |\n\nAutomate savings: set up auto-debit on salary day!"
+    ],
+    fu: ["Want to know which banks offer best savings rates?","Should I explain pay-yourself-first strategy?"]
+  },
+  inflation: {
+    kw: ["inflation","cpi","purchasing power","prices","cost of living","real return","deflation","rbi","price rise"],
+    r: [
+      "**Understanding Inflation**: India's average CPI inflation: 5-6% per year.\n\n**Real Return = Nominal Return - Inflation**\n\nExample: FD at 7% with 6% inflation = only 1% real gain!\n\nAssets that beat inflation:\n- Equities (12-15% CAGR)\n- Real estate (8-10%)\n- Gold (6-8% partially)\n- Cash savings: barely keeps up, often loses value!",
+      "**Why Inflation Destroys Cash**: Rs. 1,00,000 today = only Rs. 74,000 worth in 5 years at 6% inflation.\n\n**Rule of 70**: Divide 70 by inflation rate = years for prices to double.\nAt 7% inflation, prices double in just 10 years!\n\nThis is exactly why keeping large cash savings is actually losing money every single day."
+    ],
+    fu: ["Want to understand real vs nominal returns?","Should I explain RBI's role in controlling inflation?"]
+  },
+  compound: {
+    kw: ["compound","compounding","compound interest","power of compounding","rule of 72","double money","cagr"],
+    r: [
+      "**Compound Interest**: A = P(1 + r/n)^(nt)\n\n**Rule of 72**: Divide 72 by annual return to find years to double:\n- At 6% - doubles in 12 years\n- At 9% - doubles in 8 years\n- At 12% - doubles in 6 years\n- At 24% - doubles in 3 years!\n\nThis is why **starting early** is the single biggest wealth-building factor.",
+      "**Power of Compounding Example**:\nInvesting Rs. 5,000/month at 12% returns:\n- After 10 years: **Rs. 11.6 Lakhs** (invested Rs. 6L)\n- After 20 years: **Rs. 49.9 Lakhs** (invested Rs. 12L)\n- After 30 years: **Rs. 1.76 Crores** (invested Rs. 18L)\n\nStarting 10 years earlier gives **3.5x more wealth** with the same monthly investment!"
+    ],
+    fu: ["Want to compare starting at 25 vs 35 years old?","Should I explain CAGR vs absolute returns?"]
+  },
+  help: {
+    kw: ["help","what can you do","topics","menu","commands","guide","start","begin","options","list"],
+    r: ["**FinBot - All Topics:**\n\n| Topic | Try Asking |\n|-------|------------|\n| Stocks | explain nifty, what is P/E |\n| Budgeting | 50/30/20 rule, track expenses |\n| Loans | what is EMI, home loan rate |\n| Investments | SIP vs FD, mutual fund guide |\n| Tax | 80C deductions, income tax slab |\n| Insurance | term vs ULIP, health cover |\n| Crypto | bitcoin basics, crypto tax |\n| Savings | emergency fund, RD vs FD |\n| Inflation | beat inflation, real returns |\n| Compounding | rule of 72, double money |\n\nJust type naturally - I understand conversational language!"],
+    fu: []
+  },
+  greeting: {
+    kw: ["hello","hi","hey","good morning","good evening","howdy","namaste","sup","hiya","greetings"],
+    r: ["Hello! I am **FinBot**, your personal finance intelligence assistant.\n\nI can help with stocks, mutual funds, budgeting, loans, tax planning, insurance, crypto, savings, inflation and more.\n\nType **help** to see all topics, or just ask your question directly!"],
+    fu: ["What finance topic are you curious about today?"]
+  },
+  thanks: {
+    kw: ["thank","thanks","thank you","thx","appreciate","great","awesome","helpful","nice","good","excellent","perfect"],
+    r: [
+      "Happy to help! Financial literacy is the foundation of financial freedom. Ask me anything else anytime!",
+      "Glad that was useful! Remember: small, consistent financial decisions compound into life-changing results over time."
+    ],
+    fu: []
+  }
+};
+
+/* ── NLP Engine ─────────────────────────────────────────────── */
+function preprocess(text) {
+  return text.toLowerCase().replace(/[^a-z0-9\s/]/g, '').split(/\s+/).filter(Boolean);
+}
+
+function scoreCategory(tokens, keywords) {
+  var score = 0;
+  var tokenSet = {};
+  tokens.forEach(function(t) { tokenSet[t] = true; });
+  var fullText = tokens.join(' ');
+  keywords.forEach(function(kw) {
+    var k = kw.toLowerCase();
+    if (k.indexOf(' ') !== -1) {
+      if (fullText.indexOf(k) !== -1) score += 3;
+    } else if (tokenSet[k]) {
+      score += 2;
+    } else if (tokens.some(function(t) { return t.indexOf(k) !== -1; })) {
+      score += 1;
+    }
+  });
+  return score;
+}
+
+function getResponse(input) {
+  if (!input.trim()) return { r: "Please type a question! Try **help** to see what I can answer.", cat: "unknown", conf: 0, fu: null };
+  var tokens = preprocess(input);
+  var best = '', bestScore = 0;
+  Object.keys(KB).forEach(function(cat) {
+    var s = scoreCategory(tokens, KB[cat].kw);
+    if (s > bestScore) { bestScore = s; best = cat; }
+  });
+  if (bestScore === 0) return { r: "I am not sure about that. Try asking about **stocks, loans, budget, investments, tax, insurance, savings, or crypto**. Type **help** for a full guide!", cat: "unknown", conf: 0, fu: "Type 'help' for all available topics." };
+  var data = KB[best];
+  var resp = data.r[Math.floor(Math.random() * data.r.length)];
+  var fu = data.fu.length ? data.fu[Math.floor(Math.random() * data.fu.length)] : null;
+  return { r: resp, cat: best, conf: Math.min(100, bestScore * 20), fu: fu };
+}
+
+/* ── UI Helpers ─────────────────────────────────────────────── */
+function parseMarkdown(text) {
+  text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+  text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+  // Table parsing
+  var lines = text.split('\n');
+  var result = [], tableHTML = '', inTable = false, isHeader = true;
+  lines.forEach(function(line) {
+    var t = line.trim();
+    if (t.startsWith('|') && t.endsWith('|')) {
+      if (t.indexOf('---') !== -1) { isHeader = false; return; }
+      if (!inTable) { inTable = true; tableHTML = '<table>'; }
+      var cells = t.split('|').filter(function(c) { return c.trim() !== ''; });
+      var tag = isHeader ? 'th' : 'td';
+      tableHTML += '<tr>' + cells.map(function(c) { return '<' + tag + '>' + c.trim() + '</' + tag + '>'; }).join('') + '</tr>';
+    } else {
+      if (inTable) { tableHTML += '</table>'; result.push(tableHTML); tableHTML = ''; inTable = false; isHeader = true; }
+      result.push(line);
+    }
+  });
+  if (inTable) { tableHTML += '</table>'; result.push(tableHTML); }
+  return result.join('\n').replace(/\n/g, '<br>');
+}
+
+function getTime() {
+  return new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+}
+
+var wMessages = document.getElementById('widget-messages');
+var wInput = document.getElementById('w-input');
+var wChips = document.getElementById('w-chips');
+var isOpen = false;
+var firstOpen = true;
+
+function appendWMsg(text, isUser, meta) {
+  meta = meta || {};
+  var row = document.createElement('div');
+  row.className = 'w-row' + (isUser ? ' user' : '');
+
+  var av = document.createElement('div');
+  av.className = 'w-av ' + (isUser ? 'user' : 'bot');
+  av.textContent = isUser ? '' : '';
+  // Use HTML entities to avoid charmap issues
+  av.innerHTML = isUser ? '&#x1F464;' : '&#x1F916;';
+
+  var wrap = document.createElement('div');
+  wrap.className = 'w-wrap';
+
+  var bub = document.createElement('div');
+  bub.className = 'w-bub ' + (isUser ? 'user' : 'bot');
+  bub.innerHTML = parseMarkdown(text);
+  wrap.appendChild(bub);
+
+  if (!isUser && meta.fu) {
+    var fuEl = document.createElement('div');
+    fuEl.className = 'w-fu';
+    fuEl.textContent = meta.fu;
+    fuEl.onclick = function() { wSendQuick(meta.fu); };
+    wrap.appendChild(fuEl);
+  }
+
+  var tm = document.createElement('div');
+  tm.className = 'w-time';
+  tm.textContent = getTime();
+  wrap.appendChild(tm);
+
+  row.appendChild(av);
+  row.appendChild(wrap);
+  wMessages.appendChild(row);
+  wMessages.scrollTop = wMessages.scrollHeight;
+}
+
+function showWTyping() {
+  var row = document.createElement('div');
+  row.id = 'w-typing';
+  row.className = 'w-typing';
+  row.innerHTML = '<div class="w-av bot" style="font-size:12px">&#x1F916;</div><div class="w-typing-bub"><div class="w-dot-t"></div><div class="w-dot-t"></div><div class="w-dot-t"></div></div>';
+  wMessages.appendChild(row);
+  wMessages.scrollTop = wMessages.scrollHeight;
+}
+
+function hideWTyping() {
+  var el = document.getElementById('w-typing');
+  if (el) el.remove();
+}
+
+/* ── Chat Toggle ─────────────────────────────────────────────── */
+function toggleChat() {
+  isOpen = !isOpen;
+  var fab = document.getElementById('chat-fab');
+  var widget = document.getElementById('chat-widget');
+  var badge = document.getElementById('fab-badge');
+
+  if (isOpen) {
+    fab.classList.add('open');
+    widget.classList.add('open');
+    badge.classList.add('hidden');
+    // Remove chips after first interaction
+    if (firstOpen) {
+      setTimeout(function() {
+        appendWMsg("Hello! I am **FinBot**, your personal finance assistant. Ask me about stocks, investments, loans, tax saving, budgeting and more. Type **help** to see all topics!", false, {});
+        firstOpen = false;
+      }, 400);
+    }
+    setTimeout(function() { wInput.focus(); }, 400);
+  } else {
+    fab.classList.remove('open');
+    widget.classList.remove('open');
+  }
+}
+
+function openChat() {
+  if (!isOpen) toggleChat();
+}
+
+function openAndAsk(query) {
+  openChat();
+  setTimeout(function() { wSendQuick(query); }, isOpen ? 0 : 700);
+}
+
+/* ── Send Messages ───────────────────────────────────────────── */
+function wSendMessage() {
+  var input = wInput.value.trim();
+  if (!input) return;
+  appendWMsg(input, true);
+  wInput.value = '';
+  wInput.style.height = 'auto';
+
+  // Hide chips after first message
+  if (wChips) { wChips.style.display = 'none'; }
+
+  showWTyping();
+  setTimeout(function() {
+    hideWTyping();
+    var result = getResponse(input);
+    appendWMsg(result.r, false, { fu: result.fu });
+  }, 350 + Math.random() * 350);
+}
+
+function wSendQuick(text) {
+  wInput.value = text;
+  wSendMessage();
+}
+
+/* ── Input events ────────────────────────────────────────────── */
+wInput.addEventListener('input', function() {
+  wInput.style.height = 'auto';
+  wInput.style.height = Math.min(wInput.scrollHeight, 80) + 'px';
+});
+
+wInput.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    wSendMessage();
+  }
+});
+</script>
+</body>
+</html>
